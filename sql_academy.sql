@@ -68,3 +68,37 @@ WHERE user_gender IN('male', 'm')
 GROUP by user_id
 HAVING SUM(items) > 3) as Subquery
 
+--101
+/* Выведи для каждого пользователя первое наименование, которое он заказал (первое по времени транзакции).
+Поля в результирующей таблице: user_id  item */
+
+SELECT 
+    user_id, 
+    item
+FROM Transactions
+WHERE transaction_ts IN (
+SELECT MIN(transaction_ts)
+FROM Transactions
+GROUP BY user_id)
+
+--103
+/* Вывести список имён сотрудников, получающих большую заработную плату, чем у непосредственного руководителя.
+Поля в результирующей таблице: name */
+
+SELECT employees.name
+FROM Employee AS employees,
+    Employee AS chieves
+WHERE chieves.id = employees.chief_id
+    AND employees.salary > chieves.salary
+
+--104
+/* Вывести список имён сотрудников, получающих максимальную заработную плату в своем отделе
+Поля в результирующей таблице: name */
+
+SELECT name
+FROM Employee
+WHERE salary IN (
+    SELECT MAX(salary)
+    FROM Employee
+    GROUP BY department_id
+)
